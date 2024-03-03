@@ -39,3 +39,16 @@ def create_tables():
         FOREIGN KEY(id_question) REFERENCES questions(id)
     )''')
     del_con()
+    
+def add_questions():
+    set_con()
+    list_by_tuple = [
+        ('Сколько лет было Пушкину в последний год его жизни?', '37', '47', '29', '36'),
+        ('Сколько произведений было написано цикле "Записки охотника"?', '25', '11', '14', '31'),
+        ('Кто написал произведение "Тарас-Бульба"?', 'Н.В.Гоголь', 'А.С.Пушкин', 'И.С.Тургенев', 'Автор этого квиза')
+    ]
+    cursor.executemany('''INSERT INTO questions(question, anser, wrong_1, wrong_2, wrong_3)
+    VALUES(?, ?, ?, ?, ?)
+    ''', list_by_tuple)
+    con.commit()
+    del_con()
