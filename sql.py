@@ -85,6 +85,13 @@ def add_conection():
     questions_info = cursor.fetchall()
     for num, question in questions_info:
         print(f'Номер вопроса: {num}, Вопрос: {question}')
+    quiz_num = input('Введите номер викторины (off - завершить): ')
+    while quiz_num != 'off':
+        question_num = int(input('Введите номер вопроса: '))
+        cursor.execute('''INSERT INTO connection(id_quiz, id_question)
+                       VALUES(?,?)''', [int(quiz_num), question_num])
+        con.commit()
+        quiz_num = input('Введите номер викторины (off - завершить): ')
     del_con()
 
 def del_tables():
@@ -94,10 +101,39 @@ def del_tables():
     make_select('''DROP TABLE IF EXISTS connection''')
     del_con()
 
+def all_tables():
+    set_con()
+    make_select('''SELECT*
+                FROM quiz''')
+    print(cursor.fetchall())
+    del_con()
+    set_con()
+    make_select('''SELECT*
+                FROM questions''')
+    print(cursor.fetchall())
+    del_con()
+    set_con()
+    make_select('''SELECT*
+                FROM connection''')
+    print(cursor.fetchall())
+    del_con()
+
+def get_question(question_id = 0, quiz_id = 1):
+    set_con()
+    cursor.execute('''SELECT connection.id, questions.question, questions.anser, questions.wrong_1, questions.wrong_2, questions.wrong_3
+                   FROM connection INNER JOIN questions
+                   WHERE connection.id_question = questions.id AND connection.id_quiz = ? AND connection.id > ?''', [quiz_id, question_id])
+    peremennaya = cursor.fetchone()
+    del_con()
+    return peremennaya
+
 def main():
     del_tables()
     create_tables()
     add_questions()
     add_quizes()
     add_conection()
-main()
+    all_tables()
+    '''print(get_question(2, 3))'''
+if __name__ == '__main__':
+    main()
