@@ -1,12 +1,17 @@
-from flask import Flask, session, redirect, url_for
+from flask import Flask, session, redirect, url_for, request, render_template
+import os 
 from random import randint
-from sql import get_question
+from sql import get_question, get_quizes
 
 def choose_quiz():
-    global num_quiz, num_quest
-    num_quiz = randint(1, 3)
-    num_quest = 0
-    return '<a href="/test">перейти в тест</a>'
+    if request.method == 'GET':
+        quizes = get_quizes()
+        return render_template('web_html.html', quizes=quizes)
+    else:
+        peremennay = request.form.get('quizes')
+        session['quiz'] = peremennay
+        session['question'] = 0
+        redirect(url_for('test'))
 
 def test():
     global num_quest
@@ -19,9 +24,10 @@ def test():
 
 def results():
     pass
+folder = os.getcwd()
 
-app = Flask(__name__)
-app.add_url_rule('/', 'choose_quiz', choose_quiz)
-app.add_url_rule('/test', 'test', test)
-app.add_url_rule('/results', 'results', results)
+app = Flask(__name__, template_folder=folder, static_folder=folder)
+app.add_url_rule('/', 'choose_quiz', choose_quiz, methods = ['post', 'get'])
+app.add_url_rule('/test', 'test', test, methods = ['post', 'get'])
+app.add_url_rule('/results', 'results', results, methods = ['post', 'get'])
 app.run()

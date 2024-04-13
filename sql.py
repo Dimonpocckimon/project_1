@@ -127,6 +127,14 @@ def get_question(question_id = 0, quiz_id = 1):
     del_con()
     return peremennaya
 
+def get_quizes():
+    set_con()
+    make_select('''SELECT id, name
+                FROM quiz''')
+    peremennaya = cursor.fetchall()
+    del_con()
+    return peremennaya
+
 def main():
     del_tables()
     create_tables()

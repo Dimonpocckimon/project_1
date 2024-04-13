@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<head>
+    <title>Квесты</title>
+    <meta charset="utf-8">
+</head>
+<body>
+    <h1>Добро пожаловать!</h1>
+    <h3>Выберите викторину из списка ниже:</h3>
+    <form method="post" action="/">
+        <select name="quizes">
+            {% for id, quiz in quizes %}
+            <option value="{{id}}">{{quiz}}</option>
+            {% endfor %}
+        </select>
+        <input type="submit" value="Ну что погнали!">
+    </form> 
+</body>
